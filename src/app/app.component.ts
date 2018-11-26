@@ -4,17 +4,16 @@ import {Store} from './common/store.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements  OnInit{
+export class AppComponent implements OnInit {
 
+  constructor(private store: Store) {
 
-    constructor(private store:Store) {
+  }
 
-    }
-
-    ngOnInit() {
-        this.store.init();
-    }
+  ngOnInit() {
+    this.store.init();
+  }
 
 }
