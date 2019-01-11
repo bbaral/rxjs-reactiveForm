@@ -77,13 +77,10 @@ export class AboutComponent implements OnInit, OnDestroy {
       }
     });
 
-    const clickInDocument$ = fromEvent(document, 'mouseover');
+    const clickInDocument$ = fromEvent(document, 'click');
     this.fromeventSubscription = clickInDocument$.subscribe((clickData: any) => {
       this.mouseX = clickData.clientX;
       this.mouseY = clickData.clientY;
-      if((this.mouseX && this.mouseY) > 400) {
-        this.fromeventSubscription.unsubscribe();
-      }
     });
 
   }
@@ -91,6 +88,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.conSubscription.unsubscribe();
+    this.fromeventSubscription.unsubscribe();
   }
 
 
