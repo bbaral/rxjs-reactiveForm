@@ -12,12 +12,13 @@ import {
   Subject,
   BehaviorSubject,
   AsyncSubject,
-  ReplaySubject, Subscription
+  ReplaySubject, Subscription, Observer
 } from 'rxjs';
 import {concatAll, delayWhen, filter, map, take, timeout} from 'rxjs/operators';
 import {createHttpObservable} from '../common/util';
 import {Time} from '@angular/common';
 import * as _ from 'lodash';
+import {error} from '@angular/compiler/src/util';
 
 @Component({
   selector: 'about',
@@ -32,7 +33,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   mouseY: any;
   subscription: Subscription;
   conSubscription: Subscription;
-  fromeventSubscription: Subscription;
+  fromEventSubscription: Subscription;
   constructor() {
 
   }
@@ -59,7 +60,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     this.subscription = int.subscribe((value) => {
       this.counter = value;
       console.log(value);
-      if (this.counter > 11) {
+      if (this.counter >= 2) {
         this.subscription.unsubscribe();
       }
     });
@@ -72,15 +73,33 @@ export class AboutComponent implements OnInit, OnDestroy {
     this.conSubscription = concatAll$.subscribe((data) => {
       this.concatAllData = data;
       console.log(data);
-      if (this.concatAllData === 11) {
+      if (this.concatAllData >= 11) {
         this.conSubscription.unsubscribe();
       }
     });
 
     const clickInDocument$ = fromEvent(document, 'click');
-    this.fromeventSubscription = clickInDocument$.subscribe((clickData: any) => {
+    this.fromEventSubscription = clickInDocument$.subscribe((clickData: any) => {
       this.mouseX = clickData.clientX;
       this.mouseY = clickData.clientY;
+    });
+
+
+    const http$ = Observable.create((observer) => {
+      fetch('/api/courses').then((response) => {
+       return response.json();
+     }).then((body) => {
+       observer.next(body);
+       observer.complete();
+     }).catch((err) => {
+       observer.error(err);
+     });
+    });
+
+    http$.subscribe(data => {
+      console.log(data),
+        noop(),
+        () => console.log('completed');
     });
 
   }
@@ -88,7 +107,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.conSubscription.unsubscribe();
-    this.fromeventSubscription.unsubscribe();
+    this.fromEventSubscription.unsubscribe();
   }
 
 
