@@ -101,6 +101,38 @@ export class AboutComponent implements OnInit, OnDestroy {
         noop(),
         () => console.log('completed');
     });
+    
+    /** Forkify Food API
+     *  `${proxy}http://food2fork.com/api/search?key=${key}&q=${this.query}`;
+     *  export const proxy = 'https://cors-anywhere.herokuapp.com/';
+     *  export const key = '6e7d1abc5692eb188256bf21d3527f37';
+     */
+
+    /** Weather API key
+     * const weatherkey = 'fbf1257adcb5a5b49f7a3088dba2ae81';
+     * api.openweathermap.org/data/2.5/weather?APPID=${weatherkey}
+     */
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    const key = '6e7d1abc5692eb188256bf21d3527f37';
+
+    const fetchFood = Observable.create((observer) => {
+       fetch(`${proxy}http://food2fork.com/api/search?key=${key}`).then((response) => {
+
+        return response.json();
+      }).then((body) => {
+        observer.next(body);
+        observer.complete();
+      }).catch((err) => {
+        observer.error(err);
+      });
+    });
+
+    fetchFood.subscribe(data => {
+      console.log(data),
+        noop(),
+        () => console.log('Fetching data Completed.....');
+    });
 
   }
 
