@@ -16,7 +16,7 @@ import {
 import {merge, fromEvent, Observable, concat} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import {createHttpObservable} from '../common/util';
-import {Store} from '../common/store.service';
+import {StoreService} from '../common/store.service';
 
 @Component({
   selector: 'course',
@@ -30,7 +30,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   lessons$: Observable<Lesson[]>;
   @ViewChild('searchInput') input: ElementRef;
 
-  constructor(private route: ActivatedRoute, private store: Store) {
+  constructor(private route: ActivatedRoute, private store: StoreService) {
   }
 
   ngOnInit() {

@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import {fromEvent, noop, of} from 'rxjs';
 import {concatMap, distinctUntilChanged, exhaustMap, filter, mergeMap, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
-import {Store} from '../common/store.service';
+import {StoreService} from '../common/store.service';
 
 @Component({
   selector: 'course-dialog',
@@ -25,7 +25,7 @@ export class CourseDialogComponent implements AfterViewInit {
 
   constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<CourseDialogComponent>,
               @Inject(MAT_DIALOG_DATA) course: Course,
-              private store: Store) {
+              private store: StoreService) {
 
     this.course = course;
     this.form = fb.group({

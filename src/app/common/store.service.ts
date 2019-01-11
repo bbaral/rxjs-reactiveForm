@@ -6,11 +6,8 @@ import {createHttpObservable} from './util';
 import {fromPromise} from 'rxjs/internal-compatibility';
 
 
-@Injectable({
-  providedIn: 'root'
-})
-
-export class Store {
+@Injectable()
+export class StoreService {
 
   private subject = new BehaviorSubject<Course[]>([]);
 

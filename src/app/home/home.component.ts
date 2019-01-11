@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Store} from '../common/store.service';
+import {StoreService} from '../common/store.service';
 import {Observable} from 'rxjs';
 import {Course} from '../model/course';
 
@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   beginnerCourses$: Observable<Course[]>;
   advancedCourses$: Observable<Course[]>;
 
-  constructor(private store: Store) {}
+  constructor(private store: StoreService) {}
 
   ngOnInit() {
     const course$ = this.store.courses$;

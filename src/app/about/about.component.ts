@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   concat,
   fromEvent,
@@ -12,9 +12,9 @@ import {
   Subject,
   BehaviorSubject,
   AsyncSubject,
-  ReplaySubject
+  ReplaySubject, Subscription
 } from 'rxjs';
-import {delayWhen, filter, map, take, timeout} from 'rxjs/operators';
+import {concatAll, delayWhen, filter, map, take, timeout} from 'rxjs/operators';
 import {createHttpObservable} from '../common/util';
 import {Time} from '@angular/common';
 
@@ -23,34 +23,64 @@ import {Time} from '@angular/common';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
-
+export class AboutComponent implements OnInit, OnDestroy {
+  iClick: any;
+  counter: any = 0;
+  concatAllData: any;
+  subscription: Subscription;
+  conSubscription: Subscription;
   constructor() {
+
   }
 
   ngOnInit() {
-    const http$ = createHttpObservable('/api/courses');
-    const courses$ = http$.pipe(
-      map(res => Object.values(res["payload"])));
+    // document.addEventListener('click', evt => {
+    //   if (evt.clientX > 500) {
+    //     this.iClick = 'Less then 500';
+    //   } else {
+    //     this.iClick = evt.clientX;
+    //   }
+    // });
+    //
+    // setInterval(() => {
+    //   console.log(this.counter.toString());
+    //  this.counter++;
+    // }, 500);
+    //
+    // setTimeout(() => {
+    //   console.log('Finished...');
+    // }, 1500);
 
-    // http$.subscribe(
-    //   courses => console.log(courses),
-    //   noop(), // noop == no operation
-    //   () => console.log('Completed')
-    // );
+    const int = interval(1000);
+    this.subscription = int.subscribe((value) => {
+      this.counter = value;
+      console.log(value);
+      if (this.counter > 11) {
+        this.subscription.unsubscribe();
+      }
+    });
 
-    courses$.subscribe(
-      courses => console.log(courses),
-      noop, // () => {}, ==> instead of passing empty function. You can simply pass noop (no operation)
-      () => console.log('completed')
+    const concatAll$ = int.pipe(
+      map(value => of(value + 10)),
+      concatAll()
     );
 
-    const test$ = of(1, 2, 3);
-    const test1$ = of(5, 23, 0);
-    const test2$ = of('AVVV', 23, 0);
-    const result = concat(test1$, test$, test2$);
-    const subs = result.subscribe(value => console.log(value));
+    this.conSubscription = concatAll$.subscribe((data) => {
+      this.concatAllData = data;
+      console.log(data);
+      if (this.concatAllData === 11) {
+        this.conSubscription.unsubscribe();
+      }
+    });
+
   }
+
+  ngOnDestroy(): void {
+    //this.subscription.unsubscribe();
+    this.conSubscription.unsubscribe();
+  }
+
+
 }
 
 

@@ -12,6 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { CoursesCardListComponent } from './courses-card-list/courses-card-list.component';
 import { CourseDialogComponent } from './course-dialog/course-dialog.component';
+import {StoreService} from './common/store.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { CourseDialogComponent } from './course-dialog/course-dialog.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [StoreService],
   bootstrap: [AppComponent],
   entryComponents: [CourseDialogComponent]
 })
