@@ -17,6 +17,7 @@ import {
 import {concatAll, delayWhen, filter, map, take, timeout} from 'rxjs/operators';
 import {createHttpObservable} from '../common/util';
 import {Time} from '@angular/common';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'about',
@@ -26,9 +27,12 @@ import {Time} from '@angular/common';
 export class AboutComponent implements OnInit, OnDestroy {
   iClick: any;
   counter: any = 0;
-  concatAllData: any;
+  concatAllData: number = 0;
+  mouseX: any;
+  mouseY: any;
   subscription: Subscription;
   conSubscription: Subscription;
+  fromeventSubscription: Subscription;
   constructor() {
 
   }
@@ -73,10 +77,19 @@ export class AboutComponent implements OnInit, OnDestroy {
       }
     });
 
+    const clickInDocument$ = fromEvent(document, 'mouseover');
+    this.fromeventSubscription = clickInDocument$.subscribe((clickData: any) => {
+      this.mouseX = clickData.clientX;
+      this.mouseY = clickData.clientY;
+      if((this.mouseX && this.mouseY) > 400) {
+        this.fromeventSubscription.unsubscribe();
+      }
+    });
+
   }
 
   ngOnDestroy(): void {
-    //this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
     this.conSubscription.unsubscribe();
   }
 
