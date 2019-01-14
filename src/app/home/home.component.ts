@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {StoreService} from '../common/store.service';
-import {Observable} from 'rxjs';
+import {noop, Observable} from 'rxjs';
 import {Course} from '../model/course';
+import {createHttpObservable} from '../common/util';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'home',
@@ -9,15 +11,24 @@ import {Course} from '../model/course';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
   beginnerCourses$: Observable<Course[]>;
   advancedCourses$: Observable<Course[]>;
 
-  constructor(private store: StoreService) {}
+  constructor(private storeService: StoreService) {}
 
   ngOnInit() {
-    const course$ = this.store.courses$;
-    this.beginnerCourses$ = this.store.selectBeginnerCourses();
-    this.advancedCourses$ = this.store.selectAdvancedCourses();
+
+    // const http$: Observable<Course[]> = createHttpObservable('api/courses');
+    //
+    // const courses$ = http$.pipe(map((res) => {
+    //   Object.values(res["payload"]);
+    // }));
+    const courses$ = this.storeService.courses$;
+
+    this.beginnerCourses$ = this.storeService.selectBeginnerCourses();
+    this.advancedCourses$ = this.storeService.selectAdvancedCourses();
+
   }
 
 }

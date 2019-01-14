@@ -13,12 +13,10 @@ import {StoreService} from '../common/store.service';
   templateUrl: './course-dialog.component.html',
   styleUrls: ['./course-dialog.component.scss']
 })
-export class CourseDialogComponent implements AfterViewInit {
+export class CourseDialogComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
   course: Course;
-  // someStyle: {[name: string]: string} = {};
-  someStyle = of('backgroundColor', 'color');
 
   @ViewChild('saveButton') saveButton: ElementRef;
   @ViewChild('searchInput') searchInput: ElementRef;
@@ -37,15 +35,40 @@ export class CourseDialogComponent implements AfterViewInit {
 
   }
 
-  ngAfterViewInit() {
+  ngOnInit(): void {
+  //this.form.valueChanges.subscribe(console.log);
+    this.form.valueChanges
+      .pipe(
+        filter(() => this.form.valid),
+        concatMap(changes => this.save(changes))
+      ).subscribe();
+
   }
 
-  save() {
-    this.store.saveCourse(this.course.id, this.form.value)
-      .subscribe(
-        () => this.close(),
-        err => console.log('Error saving course', err)
-      );
+  ngAfterViewInit() {
+    fromEvent(this.saveButton.nativeElement, 'click').pipe(
+      exhaustMap(() => this.save(this.form.value))
+    ).subscribe();
+
+
+  }
+
+  // save() {
+  //   this.store.saveCourse(this.course.id, this.form.value)
+  //     .subscribe(
+  //       () => this.close(),
+  //       err => console.log('Error saving course', err)
+  //     );
+  // }
+
+  save(changes: any) {
+    return fromPromise(fetch(`api/courses/${this.course.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(changes),
+      headers: {
+        'content-type': 'application/json'
+      }
+    }));
   }
 
   close() {
