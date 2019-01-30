@@ -12,6 +12,6 @@ export class AppComponent implements OnInit {
   constructor(private store: StoreService) {}
 
   ngOnInit(): void {
-
+    this.store.init();
   }
 }
